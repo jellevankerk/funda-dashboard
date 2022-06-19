@@ -5,12 +5,12 @@ from funda.items import FundaItem
 import logging
 
 class FundaSpider(scrapy.Spider):
-
     name = "funda_spider"
     allowed_domains = ["funda.nl"]
-    start_urls = ["https://www.funda.nl/koop/amsterdam/p%s/" % (page_number) for page_number in range(500)]
-    base_url = "https://www.funda.nl/koop/amsterdam/"
-    le1 = LinkExtractor(allow=r'%s+(huis|appartement)-\d{8}' % base_url)
+    def __init__(self, place= 'amsterdam') -> None:
+        self.start_urls = [f"https://www.funda.nl/koop/{place}/p{page_number}/"  for page_number in range(500)]
+        self.base_url = f"https://www.funda.nl/koop/{place}/"
+        self.le1 = LinkExtractor(allow=r'%s+(huis|appartement)-\d{8}' % self.base_url)
 
     def parse(self, response):
         links = self.le1.extract_links(response)
