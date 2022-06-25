@@ -8,12 +8,12 @@ class FundaSpider(Spider):
 
     name = "funda_spider"
     allowed_domains = ["funda.nl"]
-    max_number_pages_searches = 500
 
     def __init__(self, place='amsterdam'):
-        self.start_urls = [f"https://www.funda.nl/koop/{place}/p{page_number}/"  for page_number in range(self.max_number_pages_searches)]
         self.base_url = f"https://www.funda.nl/koop/{place}/"
+        self.start_urls = [self.base_url]
         self.le1 = LinkExtractor(allow=r'%s+(huis|appartement)-\d{8}' % self.base_url)
+
 
     def parse(self, response):
         links = self.le1.extract_links(response)
@@ -26,6 +26,10 @@ class FundaSpider(Spider):
                 elif re.search(r'/huis-',link.url):
                     item['property_type'] = "house"
                 yield scrapy.Request(link.url, callback=self.parse_dir_contents, meta={'item': item})
+                
+        next_page =  response.css('a[rel="next"]::attr(href)').get()
+        if next_page:
+            yield response.follow(next_page, callback = self.parse)
 
     def parse_dir_contents(self, response):
         new_item = response.request.meta['item']
