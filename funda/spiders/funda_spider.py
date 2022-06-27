@@ -5,7 +5,6 @@ from scrapy.linkextractors import LinkExtractor
 from funda.items import FundaItem
 
 class FundaSpider(Spider):
-
     name = "funda_spider"
     allowed_domains = ["funda.nl"]
 
@@ -43,6 +42,10 @@ class FundaSpider(Spider):
         year_built = self.constructionYear(response)
         area_dd = response.xpath("//dt[text()='Wonen']/following-sibling::dd[1]/span/text()").extract()[0]
         area = re.findall(r'\d+', area_dd)[0]
+        price_per_area = ''.join(re.findall(r'\d+', response.css('dd.object-kenmerken-list__asking-price.fd-flex.fd-align-items-center::text').get())) 
+        offer_started = [x for x in response.css('dt') if x.css('::text').get()=='Aangeboden sinds'][0].xpath('./following-sibling::dd//span/text()').get() 
+        status = [x for x in response.css('dt') if x.css('::text').get()=='Aangeboden sinds'][0].xpath('./following-sibling::dd//span/text()').get() 
+        energy_label = response.css('span.energielabel::text').get().strip()
         bedrooms = response.xpath("//span[contains(@title,'slaapkamer')]/following-sibling::span[1]/text()").extract()[0]
 
 

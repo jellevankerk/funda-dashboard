@@ -13,5 +13,9 @@ class FundaItem(scrapy.Item):
     property_type = scrapy.Field()      # House or apartment
     city = scrapy.Field()
     neigborhood = scrapy.Field()
+    price_per_area = scrapy.Field()
+    offer_started = scrapy.Field()
+    status = scrapy.Field()
+    energy_label = scrapy.Field()
     posting_date = scrapy.Field()
     sale_date = scrapy.Field()
