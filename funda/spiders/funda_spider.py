@@ -39,6 +39,7 @@ class FundaSpider(Spider):
         address = re.findall(r'te koop: (.*) \d{4}',title)[0]
         price_dd = response.xpath('.//strong[@class="object-header__price"]/text()').extract()[0]
         price = ''.join(re.findall(r'\d+', price_dd)).replace('.','')
+        neighborhood = response.css('a.fd-m-left-2xs--bp-m.fd-display-block.fd-display-inline--bp-m::text').get()
         year_built = self.constructionYear(response)
         area_dd = response.xpath("//dt[text()='Wonen']/following-sibling::dd[1]/span/text()").extract()[0]
         area = re.findall(r'\d+', area_dd)[0]
@@ -47,11 +48,12 @@ class FundaSpider(Spider):
 
         new_item['postal_code'] = postal_code
         new_item['address'] = address
-        new_item['price'] = price
+        new_item['price'] = int(price)
         new_item['year_built'] = year_built
         new_item['area'] = area
-        new_item['bedrooms'] = bedrooms
+        new_item['bedrooms'] = int(bedrooms)
         new_item['city'] = city
+        new_item['neigborhood']= neighborhood
         yield new_item
     
 
