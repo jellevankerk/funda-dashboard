@@ -48,15 +48,9 @@ print(
 #%% Summary of all interesting parameters
 aggregations = {
     "number_of_houses_for_sale": ("price", "size"),
-    "max_area": ("area", "max"),
     "mean_area": ("area", "mean"),
-    "min_area": ("area", "min"),
-    "max_price": ("price", "max"),
     "mean_price": ("price", "mean"),
-    "min_price": ("price", "min"),
-    "max_bedrooms": ("bedrooms", "max"),
-    "mean_bedrooms": ("bedrooms", "mean"),
-    "min_bedrooms": ("bedrooms", "min"),
+    "mean_bedrooms": ("bedrooms", "mean")
 }
 summary_sales = eindhoven_funda_sales_data.groupby("neigborhood").agg(**aggregations)
 
@@ -66,6 +60,14 @@ eindhoven_merge_geodata = eindhoven_geodata.merge(
 )
 
 #%% plot geodata
-eindhoven_merge_geodata.plot(column="number_of_houses_for_sale", legend=True, missing_kwds={'color': 'lightgrey'})
-eindhoven_merge_geodata.plot(column="mean_price", legend=True, missing_kwds={'color': 'lightgrey'})
+fig, ax = plt.subplots(ncols=2, nrows=2 ,sharex=True, sharey=True)
+fig.suptitle('Mean statistics Eindhoven per neighborhood')
+eindhoven_merge_geodata.plot(ax = ax[0][0], column="number_of_houses_for_sale", legend=True, missing_kwds={'color': 'lightgrey'})
+ax[0][0].set_title('number of houses')
+eindhoven_merge_geodata.plot(ax = ax[1][0], column="mean_price", legend=True, missing_kwds={'color': 'lightgrey'})
+ax[1][0].set_title('Price (euro)')
+eindhoven_merge_geodata.plot(ax = ax[0][1], column="mean_area", legend=True, missing_kwds={'color': 'lightgrey'})
+ax[0][1].set_title('Area (m2)')
+eindhoven_merge_geodata.plot(ax = ax[1][1], column="mean_bedrooms", legend=True, missing_kwds={'color': 'lightgrey'})
+ax[1][1].set_title('Number of bedrooms')
 plt.show()
